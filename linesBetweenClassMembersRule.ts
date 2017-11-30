@@ -12,10 +12,10 @@ export class Rule extends Lint.Rules.AbstractRule {
 }
 
 class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
-  public visitMethodDeclaration(node: ts.MethodDeclaration) {
 
+  public visitMethodDeclaration(node: ts.MethodDeclaration) {
     if (!this.isPreviousLineBlank(node, this.getSourceFile())) {
-      this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING));
+      this.onRuleLintFail(node);
     }
 
     // call the base version of this visitor to actually parse this node
@@ -36,5 +36,23 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
     ) - 1;
 
     return lineStartPositions[startPosIdx - 1] === lineStartPositions[startPosIdx] - 1;
+  }
+
+  private onRuleLintFail(node: ts.MethodDeclaration) {
+    let start = node.getStart();
+    let width = node.getWidth();
+    let text = node.getText();
+
+    const comments = ts.getLeadingCommentRanges(this.getSourceFile().text, node.pos) || [];
+    if (comments.length > 0) {
+      start = comments[0].pos;
+      width = comments[0].end - start;
+      text = this.getSourceFile().text.substr(start, width);
+    }
+
+    let replacement = new Lint.Replacement(start, width, `\n  ${text}`);
+    const fix = new Lint.Fix('lines-between-class-members', [replacement]);
+
+    this.addFailure(this.createFailure(start, width, Rule.FAILURE_STRING, fix));
   }
 }

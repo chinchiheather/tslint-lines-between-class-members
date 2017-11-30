@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Lint = require("tslint");
 var ts = require("typescript");
-var Rule = /** @class */ (function (_super) {
+var Rule = (function (_super) {
     __extends(Rule, _super);
     function Rule() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -20,18 +20,18 @@ var Rule = /** @class */ (function (_super) {
     Rule.prototype.apply = function (sourceFile) {
         return this.applyWithWalker(new LinesBetweenClassMembersWalker(sourceFile, this.getOptions()));
     };
-    Rule.FAILURE_STRING = "must have blank line between class methods";
     return Rule;
 }(Lint.Rules.AbstractRule));
+Rule.FAILURE_STRING = "must have blank line between class methods";
 exports.Rule = Rule;
-var LinesBetweenClassMembersWalker = /** @class */ (function (_super) {
+var LinesBetweenClassMembersWalker = (function (_super) {
     __extends(LinesBetweenClassMembersWalker, _super);
     function LinesBetweenClassMembersWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     LinesBetweenClassMembersWalker.prototype.visitMethodDeclaration = function (node) {
         if (!this.isPreviousLineBlank(node, this.getSourceFile())) {
-            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING));
+            this.onRuleLintFail(node);
         }
         // call the base version of this visitor to actually parse this node
         _super.prototype.visitMethodDeclaration.call(this, node);
@@ -47,6 +47,20 @@ var LinesBetweenClassMembersWalker = /** @class */ (function (_super) {
             return startPos > pos || idx === lineStartPositions.length - 1;
         }) - 1;
         return lineStartPositions[startPosIdx - 1] === lineStartPositions[startPosIdx] - 1;
+    };
+    LinesBetweenClassMembersWalker.prototype.onRuleLintFail = function (node) {
+        var start = node.getStart();
+        var width = node.getWidth();
+        var text = node.getText();
+        var comments = ts.getLeadingCommentRanges(this.getSourceFile().text, node.pos) || [];
+        if (comments.length > 0) {
+            start = comments[0].pos;
+            width = comments[0].end - start;
+            text = this.getSourceFile().text.substr(start, width);
+        }
+        var replacement = new Lint.Replacement(start, width, "\n  " + text);
+        var fix = new Lint.Fix('lines-between-class-members', [replacement]);
+        this.addFailure(this.createFailure(start, width, Rule.FAILURE_STRING, fix));
     };
     return LinesBetweenClassMembersWalker;
 }(Lint.RuleWalker));
