@@ -11,6 +11,10 @@
   ],
   "author": "Heather Roberts",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinchiheather/tslint-lines-between-class-members.git"
+  },
   "devDependencies": {
     "typescript": "~2.3.2",
     "tslint": "^5.8.0"
