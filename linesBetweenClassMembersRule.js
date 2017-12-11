@@ -59,7 +59,14 @@ var LinesBetweenClassMembersWalker = (function (_super) {
             text = this.getSourceFile().text.substr(start, width);
         }
         var replacement = new Lint.Replacement(start, width, "\n  " + text);
-        var fix = new Lint.Fix('lines-between-class-members', [replacement]);
+        // handle both tslint v4 & v5
+        var fix;
+        if (typeof Lint['Fix'] === 'undefined') {
+            fix = replacement;
+        }
+        else {
+            fix = new Lint['Fix']('lines-between-class-members', [replacement]);
+        }
         this.addFailure(this.createFailure(start, width, Rule.FAILURE_STRING, fix));
     };
     return LinesBetweenClassMembersWalker;

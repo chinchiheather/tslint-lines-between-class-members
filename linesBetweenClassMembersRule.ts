@@ -51,7 +51,13 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
     }
 
     let replacement = new Lint.Replacement(start, width, `\n  ${text}`);
-    const fix = new Lint.Fix('lines-between-class-members', [replacement]);
+    // handle both tslint v4 & v5
+    let fix: any;
+    if (typeof Lint['Fix'] === 'undefined') {
+      fix = replacement;
+    } else {
+      fix = new Lint['Fix']('lines-between-class-members', [replacement]);
+    }
 
     this.addFailure(this.createFailure(start, width, Rule.FAILURE_STRING, fix));
   }
