@@ -14,7 +14,9 @@ export class Rule extends Lint.Rules.AbstractRule {
 class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
 
   public visitMethodDeclaration(node: ts.MethodDeclaration) {
-    if (!this.isPreviousLineBlank(node, this.getSourceFile())) {
+    const isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
+    const isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
+    if (!isPrevLineBlank && !isPrevLineClassDec) {
       this.onRuleLintFail(node);
     }
 
@@ -22,20 +24,42 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
     super.visitMethodDeclaration(node);
   }
 
+    /**
+     * Tests if the line above the method is blank
+     * A line is considered blank if it is an empty new line or if there are only whitespace characters present
+     */
   private isPreviousLineBlank(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): boolean {
-    let pos = node.getStart();
+    const prevLine = this.getPrevLineText(node, sourceFile);
+    return prevLine.length === 0 || !(/\S/.test(prevLine));
+  }
 
-    const comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
-    if (comments.length > 0) {
-      pos = comments[0].pos;
-    }
+    /**
+     * Tests whether the previous line is the class declaration
+     * We do not want to enforce a new line between class declaration and constructor (or other first method)
+     */
+  private isPreviousLineClassDec(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): boolean {
+    const prevLine = this.getPrevLineText(node, sourceFile);
+    return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+  }
 
-    const lineStartPositions = <any>sourceFile.getLineStarts();
-    let startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
-      startPos > pos || idx === lineStartPositions.length - 1
-    ) - 1;
+    /**
+     * Gets the text content of the line above the method
+     * Any documenting comments are ignored and the first line above those will be retrieved instead
+     */
+  private getPrevLineText(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): string {
+      let pos = node.getStart();
 
-    return lineStartPositions[startPosIdx - 1] === lineStartPositions[startPosIdx] - 1;
+      const comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
+      if (comments.length > 0) {
+          pos = comments[0].pos;
+      }
+
+      const lineStartPositions = <any>sourceFile.getLineStarts();
+      let startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
+          startPos > pos || idx === lineStartPositions.length - 1
+      ) - 1;
+
+      return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
   }
 
   private onRuleLintFail(node: ts.MethodDeclaration) {

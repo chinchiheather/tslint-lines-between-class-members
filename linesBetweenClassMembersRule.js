@@ -30,13 +30,36 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     LinesBetweenClassMembersWalker.prototype.visitMethodDeclaration = function (node) {
-        if (!this.isPreviousLineBlank(node, this.getSourceFile())) {
+        var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
+        var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
+        console.log("blank " + isPrevLineBlank + " class " + isPrevLineClassDec);
+        if (!isPrevLineBlank && !isPrevLineClassDec) {
             this.onRuleLintFail(node);
         }
         // call the base version of this visitor to actually parse this node
         _super.prototype.visitMethodDeclaration.call(this, node);
     };
+    /**
+     * Tests if the line above the method is blank
+     * A line is considered blank if it is an empty new line or if there are only whitespace characters present
+     */
     LinesBetweenClassMembersWalker.prototype.isPreviousLineBlank = function (node, sourceFile) {
+        var prevLine = this.getPrevLineText(node, sourceFile);
+        return prevLine.length === 0 || !(/\S/.test(prevLine));
+    };
+    /**
+     * Tests whether the previous line is the class declaration
+     * We do not want to enforce a new line between class declaration and constructor (or other first method)
+     */
+    LinesBetweenClassMembersWalker.prototype.isPreviousLineClassDec = function (node, sourceFile) {
+        var prevLine = this.getPrevLineText(node, sourceFile);
+        return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+    };
+    /**
+     * Gets the text content of the line above the method
+     * Any documenting comments are ignored and the first line above those will be retrieved instead
+     */
+    LinesBetweenClassMembersWalker.prototype.getPrevLineText = function (node, sourceFile) {
         var pos = node.getStart();
         var comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
         if (comments.length > 0) {
@@ -46,7 +69,7 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         var startPosIdx = lineStartPositions.findIndex(function (startPos, idx) {
             return startPos > pos || idx === lineStartPositions.length - 1;
         }) - 1;
-        return lineStartPositions[startPosIdx - 1] === lineStartPositions[startPosIdx] - 1;
+        return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
     };
     LinesBetweenClassMembersWalker.prototype.onRuleLintFail = function (node) {
         var start = node.getStart();
