@@ -1,6 +1,6 @@
 {
   "name": "tslint-lines-between-class-members",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Custom rule for TSLint to enforce blank lines between class methods - achieves a similar thing to lines-between-class-members in ESLint",
   "scripts": {
     "compile": "tsc linesBetweenClassMembersRule.ts --target ES5 --lib DOM,ES6",
