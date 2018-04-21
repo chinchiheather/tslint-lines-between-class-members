@@ -1,8 +1,8 @@
-class WhitespaceNewLine {
+class MultipleNewLines {
 
 
   constructor() {}
-
-
+  
+  
   method() {}
 }
