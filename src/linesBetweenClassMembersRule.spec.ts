@@ -11,6 +11,26 @@ test('fails if no new line but a method comment between class methods', (t: Asse
   t.is(results.errorCount, 2);
 });
 
+test('fails if no new line between variable and class method', (t: AssertContext) => {
+  const results = TestHelpers.lint('fails/noLineBetweenVarAndMethod.ts');
+  t.is(results.errorCount, 1);
+});
+
+test('fails if no new line but a comment between variable and class method', (t: AssertContext) => {
+  const results = TestHelpers.lint('fails/noLineAndCommentBetweenVarAndMethod.ts');
+  t.is(results.errorCount, 2);
+});
+
+test('fails if no new line between variable and constructor', (t: AssertContext) => {
+  const results = TestHelpers.lint('fails/noLineBetweenVarAndConstructor.ts');
+  t.is(results.errorCount, 1);
+});
+
+test('fails if no new line but a comment between variable and constructor', (t: AssertContext) => {
+  const results = TestHelpers.lint('fails/noLineAndCommentBetweenVarAndConstructor.ts');
+  t.is(results.errorCount, 1);
+});
+
 test('passes when empty new line between class methods', (t: AssertContext) => {
   const results = TestHelpers.lint('passes/emptyNewLine.ts');
   t.is(results.errorCount, 0);
