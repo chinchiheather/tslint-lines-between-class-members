@@ -1,4 +1,4 @@
-class NoLineBetweenVarAndMethod {
+class NoLineAndCommentBetweenVarAndMethod {
 
   constructor() {}
 
