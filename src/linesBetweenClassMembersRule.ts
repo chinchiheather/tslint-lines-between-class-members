@@ -15,6 +15,9 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
 
   public visitConstructorDeclaration(node: ts.ConstructorDeclaration) {
     this.validate(node);
+
+    // call the base version of this visitor to actually parse this node
+    super.visitConstructorDeclaration(node);
   }
 
   public visitMethodDeclaration(node: ts.MethodDeclaration) {
