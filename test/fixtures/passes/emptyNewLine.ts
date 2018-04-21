@@ -1,0 +1,6 @@
+class EmptyNewLine {
+
+  constructor() {}
+
+  method() {}
+}

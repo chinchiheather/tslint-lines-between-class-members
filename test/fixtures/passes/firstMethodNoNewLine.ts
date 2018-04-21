@@ -1,0 +1,5 @@
+class FirstMethodNoNewLine {
+  constructor() {}
+
+  method() {}
+}

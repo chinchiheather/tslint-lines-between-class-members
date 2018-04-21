@@ -1,0 +1,6 @@
+class WhitespaceNewLine {
+  
+  constructor() {}
+  
+  method() {}
+}
