@@ -31,6 +31,8 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     }
     LinesBetweenClassMembersWalker.prototype.visitConstructorDeclaration = function (node) {
         this.validate(node);
+        // call the base version of this visitor to actually parse this node
+        _super.prototype.visitConstructorDeclaration.call(this, node);
     };
     LinesBetweenClassMembersWalker.prototype.visitMethodDeclaration = function (node) {
         this.validate(node);
