@@ -5,6 +5,10 @@ Custom rule for TSLint to enforce blank lines between class methods - achieves a
 1. Install package
 
 ```
+# yarn
+yarn add --dev tslint-lines-between-class-members
+
+# npm
 npm install --save-dev tslint-lines-between-class-members
 ```
 2. Update your tslint.json config file, adding the new rules directory and rule
