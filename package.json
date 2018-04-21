@@ -5,7 +5,7 @@
   "scripts": {
     "compile": "tsc",
     "prepublish": "npm run compile",
-    "lint": "tslint --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json --config tslint.json",
     "test": "ava-ts src/**/*.spec.ts --verbose",
     "test:watch": "npm test -- --watch"
   },

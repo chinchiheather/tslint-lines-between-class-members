@@ -1,6 +1,6 @@
-import {Linter, LintResult, Configuration} from "tslint";
-import * as fs from "fs";
-import * as path from "path";
+import {Linter, LintResult, Configuration} from 'tslint';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class TestHelpers {
 
