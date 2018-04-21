@@ -29,14 +29,22 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     function LinesBetweenClassMembersWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    LinesBetweenClassMembersWalker.prototype.visitConstructorDeclaration = function (node) {
+        this.validate(node);
+        // call the base version of this visitor to actually parse this node
+        _super.prototype.visitConstructorDeclaration.call(this, node);
+    };
     LinesBetweenClassMembersWalker.prototype.visitMethodDeclaration = function (node) {
+        this.validate(node);
+        // call the base version of this visitor to actually parse this node
+        _super.prototype.visitMethodDeclaration.call(this, node);
+    };
+    LinesBetweenClassMembersWalker.prototype.validate = function (node) {
         var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
         if (!isPrevLineBlank && !isPrevLineClassDec) {
             this.onRuleLintFail(node);
         }
-        // call the base version of this visitor to actually parse this node
-        _super.prototype.visitMethodDeclaration.call(this, node);
     };
     /**
      * Tests if the line above the method is blank

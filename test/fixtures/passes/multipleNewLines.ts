@@ -1,0 +1,8 @@
+class MultipleNewLines {
+
+
+  constructor() {}
+  
+  
+  method() {}
+}
