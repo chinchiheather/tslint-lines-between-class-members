@@ -2,7 +2,7 @@ import * as Lint from 'tslint';
 import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
-  public static FAILURE_STRING = "must have blank line between class methods";
+  public static FAILURE_STRING = 'must have blank line between class methods';
 
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
     return this.applyWithWalker(
@@ -24,42 +24,42 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
     super.visitMethodDeclaration(node);
   }
 
-    /**
-     * Tests if the line above the method is blank
-     * A line is considered blank if it is an empty new line or if there are only whitespace characters present
-     */
+  /**
+   * Tests if the line above the method is blank
+   * A line is considered blank if it is an empty new line or if there are only whitespace characters present
+   */
   private isPreviousLineBlank(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): boolean {
     const prevLine = this.getPrevLineText(node, sourceFile);
     return prevLine.length === 0 || !(/\S/.test(prevLine));
   }
 
-    /**
-     * Tests whether the previous line is the class declaration
-     * We do not want to enforce a new line between class declaration and constructor (or other first method)
-     */
+  /**
+   * Tests whether the previous line is the class declaration
+   * We do not want to enforce a new line between class declaration and constructor (or other first method)
+   */
   private isPreviousLineClassDec(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): boolean {
     const prevLine = this.getPrevLineText(node, sourceFile);
     return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
   }
 
-    /**
-     * Gets the text content of the line above the method
-     * Any documenting comments are ignored and the first line above those will be retrieved instead
-     */
+  /**
+   * Gets the text content of the line above the method
+   * Any documenting comments are ignored and the first line above those will be retrieved instead
+   */
   private getPrevLineText(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): string {
-      let pos = node.getStart();
+    let pos = node.getStart();
 
-      const comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
-      if (comments.length > 0) {
-          pos = comments[0].pos;
-      }
+    const comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
+    if (comments.length > 0) {
+      pos = comments[0].pos;
+    }
 
-      const lineStartPositions = <any>sourceFile.getLineStarts();
-      let startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
-          startPos > pos || idx === lineStartPositions.length - 1
-      ) - 1;
+    const lineStartPositions = <any>sourceFile.getLineStarts();
+    const startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
+      startPos > pos || idx === lineStartPositions.length - 1
+    ) - 1;
 
-      return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
+    return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
   }
 
   private onRuleLintFail(node: ts.MethodDeclaration) {
@@ -74,7 +74,7 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
       text = this.getSourceFile().text.substr(start, width);
     }
 
-    let replacement = new Lint.Replacement(start, width, `\n  ${text}`);
+    const replacement = new Lint.Replacement(start, width, `\n  ${text}`);
     // handle both tslint v4 & v5
     let fix: any;
     if (typeof Lint['Fix'] === 'undefined') {

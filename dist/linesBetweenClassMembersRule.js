@@ -22,7 +22,7 @@ var Rule = (function (_super) {
     };
     return Rule;
 }(Lint.Rules.AbstractRule));
-Rule.FAILURE_STRING = "must have blank line between class methods";
+Rule.FAILURE_STRING = 'must have blank line between class methods';
 exports.Rule = Rule;
 var LinesBetweenClassMembersWalker = (function (_super) {
     __extends(LinesBetweenClassMembersWalker, _super);
@@ -32,7 +32,6 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.visitMethodDeclaration = function (node) {
         var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
-        console.log("blank " + isPrevLineBlank + " class " + isPrevLineClassDec);
         if (!isPrevLineBlank && !isPrevLineClassDec) {
             this.onRuleLintFail(node);
         }
