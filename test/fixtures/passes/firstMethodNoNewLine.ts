@@ -3,3 +3,11 @@ class FirstMethodNoNewLine {
 
   method() {}
 }
+
+class FirstMethodNoNewLineWithAllmanBraceStlye
+{
+  constructor() {}
+
+  method() {}
+}
+

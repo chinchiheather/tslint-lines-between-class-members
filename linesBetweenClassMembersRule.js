@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Lint = require("tslint");
 var ts = require("typescript");
-var Rule = (function (_super) {
+var Rule = /** @class */ (function (_super) {
     __extends(Rule, _super);
     function Rule() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -20,11 +20,11 @@ var Rule = (function (_super) {
     Rule.prototype.apply = function (sourceFile) {
         return this.applyWithWalker(new LinesBetweenClassMembersWalker(sourceFile, this.getOptions()));
     };
+    Rule.FAILURE_STRING = 'must have blank line between class methods';
     return Rule;
 }(Lint.Rules.AbstractRule));
-Rule.FAILURE_STRING = 'must have blank line between class methods';
 exports.Rule = Rule;
-var LinesBetweenClassMembersWalker = (function (_super) {
+var LinesBetweenClassMembersWalker = /** @class */ (function (_super) {
     __extends(LinesBetweenClassMembersWalker, _super);
     function LinesBetweenClassMembersWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -42,7 +42,8 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.validate = function (node) {
         var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
-        if (!isPrevLineBlank && !isPrevLineClassDec) {
+        var isPrevLineOpenningBrace = this.isPrevLineOpenningBrace(node, this.getSourceFile());
+        if (!isPrevLineBlank && !isPrevLineClassDec && !isPrevLineOpenningBrace) {
             this.onRuleLintFail(node);
         }
     };
@@ -61,6 +62,14 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.isPreviousLineClassDec = function (node, sourceFile) {
         var prevLine = this.getPrevLineText(node, sourceFile);
         return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+    };
+    /**
+     * Tests whether the previous line is the openning brace
+     * We do not want to enforce a newline after openning brace for the class declaration
+     */
+    LinesBetweenClassMembersWalker.prototype.isPrevLineOpenningBrace = function (node, sourceFile) {
+        var prevLine = this.getPrevLineText(node, sourceFile);
+        return prevLine.trim() === '{';
     };
     /**
      * Gets the text content of the line above the method
