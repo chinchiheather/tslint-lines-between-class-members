@@ -51,6 +51,11 @@ test('passes if first method in class and no new line before it', (t: AssertCont
   t.is(results.errorCount, 0);
 });
 
+test('passes if first method in class and opening brace before it', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/firstMethodNewLineWithAllmanBraceStyle.ts');
+  t.is(results.errorCount, 0);
+});
+
 test('passes if new line and method comment between class methods', (t: AssertContext) => {
   const results = TestHelpers.lint('passes/newLineAndMethodComment.ts');
   t.is(results.errorCount, 0);

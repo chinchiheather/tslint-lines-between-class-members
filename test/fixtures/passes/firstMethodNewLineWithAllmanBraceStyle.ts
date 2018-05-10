@@ -1,0 +1,6 @@
+class FirstMethodNoNewLineWithAllmanBraceStlye
+{
+  constructor() {}
+
+  method() {}
+}
