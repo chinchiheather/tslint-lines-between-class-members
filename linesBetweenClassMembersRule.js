@@ -64,7 +64,7 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
     };
     /**
-     * Tests whether the previous line is the openning brace
+     * Tests whether the previous line is the opening brace
      * We do not want to enforce a newline after opening brace for the class declaration
      */
     LinesBetweenClassMembersWalker.prototype.isPrevLineOpeningBrace = function (node, sourceFile) {
