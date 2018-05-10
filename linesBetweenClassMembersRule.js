@@ -42,7 +42,8 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.validate = function (node) {
         var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
-        if (!isPrevLineBlank && !isPrevLineClassDec) {
+        var isPrevLineOpeningBrace = this.isPrevLineOpeningBrace(node, this.getSourceFile());
+        if (!isPrevLineBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
             this.onRuleLintFail(node);
         }
     };
@@ -61,6 +62,14 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.isPreviousLineClassDec = function (node, sourceFile) {
         var prevLine = this.getPrevLineText(node, sourceFile);
         return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+    };
+    /**
+     * Tests whether the previous line is the openning brace
+     * We do not want to enforce a newline after opening brace for the class declaration
+     */
+    LinesBetweenClassMembersWalker.prototype.isPrevLineOpeningBrace = function (node, sourceFile) {
+        var prevLine = this.getPrevLineText(node, sourceFile);
+        return prevLine.trim() === '{';
     };
     /**
      * Gets the text content of the line above the method
