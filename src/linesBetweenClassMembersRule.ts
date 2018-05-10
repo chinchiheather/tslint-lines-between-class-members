@@ -30,8 +30,8 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
   private validate(node: ts.FunctionLikeDeclaration) {
     const isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
     const isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
-    const isPrevLineOpenningBrace = this.isPrevLineOpenningBrace(node, this.getSourceFile());
-    if (!isPrevLineBlank && !isPrevLineClassDec && !isPrevLineOpenningBrace) {
+    const isPrevLineOpeningBrace = this.isPrevLineOpeningBrace(node, this.getSourceFile());
+    if (!isPrevLineBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
       this.onRuleLintFail(node);
     }
   }
@@ -56,9 +56,9 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
 
   /**
    * Tests whether the previous line is the openning brace
-   * We do not want to enforce a newline after openning brace for the class declaration
+   * We do not want to enforce a newline after opening brace for the class declaration
    */
-  private isPrevLineOpenningBrace(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
+  private isPrevLineOpeningBrace(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
     const prevLine = this.getPrevLineText(node, sourceFile);
     return prevLine.trim() === '{';
   }
