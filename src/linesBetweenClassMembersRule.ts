@@ -80,7 +80,7 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
       startPos > pos || idx === lineStartPositions.length - 1
     ) - 1;
 
-    return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
+    return sourceFile.text.substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
   }
 
   private onRuleLintFail(node: ts.FunctionLikeDeclaration) {
