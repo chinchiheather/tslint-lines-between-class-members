@@ -85,7 +85,7 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         var startPosIdx = lineStartPositions.findIndex(function (startPos, idx) {
             return startPos > pos || idx === lineStartPositions.length - 1;
         }) - 1;
-        return sourceFile.getText().substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
+        return sourceFile.text.substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
     };
     LinesBetweenClassMembersWalker.prototype.onRuleLintFail = function (node) {
         var start = node.getStart();
