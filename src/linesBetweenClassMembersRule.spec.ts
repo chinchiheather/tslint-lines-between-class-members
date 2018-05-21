@@ -60,3 +60,8 @@ test('passes if new line and method comment between class methods', (t: AssertCo
   const results = TestHelpers.lint('passes/newLineAndMethodComment.ts');
   t.is(results.errorCount, 0);
 });
+
+test('does not fail when there is a comment above class', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/commentAboveClass.ts');
+  t.is(results.errorCount, 0);
+});
