@@ -1,6 +1,6 @@
-[![npm](https://img.shields.io/npm/dm/tslint-lines-between-class-members.svg)]() 
-
 # tslint-lines-between-class-members
+[![npm](https://img.shields.io/npm/dm/tslint-lines-between-class-members.svg)](https://www.npmjs.com/package/tslint-lines-between-class-members) 
+
 Custom rule for TSLint to enforce blank lines between class methods - achieves a similar thing to [lines-between-class-members in ESLint](https://github.com/eslint/eslint/blob/master/docs/rules/lines-between-class-members.md)
 
 ## Setup
