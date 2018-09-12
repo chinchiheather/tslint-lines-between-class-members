@@ -1,0 +1,4 @@
+class NoNewLines {
+  constructor() {}
+  method() {}
+}

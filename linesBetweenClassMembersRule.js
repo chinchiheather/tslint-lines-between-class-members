@@ -22,7 +22,6 @@ var Rule = (function (_super) {
     };
     return Rule;
 }(Lint.Rules.AbstractRule));
-Rule.FAILURE_STRING = 'must have blank line between class methods';
 exports.Rule = Rule;
 var LinesBetweenClassMembersWalker = (function (_super) {
     __extends(LinesBetweenClassMembersWalker, _super);
@@ -40,27 +39,53 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         _super.prototype.visitMethodDeclaration.call(this, node);
     };
     LinesBetweenClassMembersWalker.prototype.validate = function (node) {
-        var isPrevLineBlank = this.isPreviousLineBlank(node, this.getSourceFile());
+        var arePrevLinesBlank = this.arePreviousLinesBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
         var isPrevLineOpeningBrace = this.isPrevLineOpeningBrace(node, this.getSourceFile());
-        if (!isPrevLineBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
+        if (!arePrevLinesBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
             this.onRuleLintFail(node);
         }
     };
     /**
-     * Tests if the line above the method is blank
+     * Tests lines above the method are blank
+     * Tests exact number of lines if option has been specified, or just checks for one new line if not
      * A line is considered blank if it is an empty new line or if there are only whitespace characters present
      */
-    LinesBetweenClassMembersWalker.prototype.isPreviousLineBlank = function (node, sourceFile) {
-        var prevLine = this.getPrevLineText(node, sourceFile);
-        return prevLine.length === 0 || !(/\S/.test(prevLine));
+    LinesBetweenClassMembersWalker.prototype.arePreviousLinesBlank = function (node, sourceFile) {
+        var options = this.getOptions();
+        if (options.length > 0) {
+            // if user has specified the number of new lines they want between their methods
+            // we need to check there are exactly that many blank lines
+            var numLinesOption = options[0];
+            // check for invalid num lines option
+            if (!/^[0-9]+$/.test(numLinesOption)) {
+                return false;
+            }
+            // check each previous line is blank for num lines specified
+            var i = void 0;
+            for (i = 0; i < numLinesOption; i++) {
+                if (!this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1))) {
+                    return false;
+                }
+            }
+            // finally, check line before is not blank
+            return !this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
+        }
+        else {
+            // if user has not specified the number of blank lines, we just want to check there
+            // is at least one
+            return this.isLineBlank(this.getPrevLinesText(node, sourceFile));
+        }
+    };
+    LinesBetweenClassMembersWalker.prototype.isLineBlank = function (line) {
+        return line.length === 0 || !(/\S/.test(line));
     };
     /**
      * Tests whether the previous line is the class declaration
      * We do not want to enforce a new line between class declaration and constructor (or other first method)
      */
     LinesBetweenClassMembersWalker.prototype.isPreviousLineClassDec = function (node, sourceFile) {
-        var prevLine = this.getPrevLineText(node, sourceFile);
+        var prevLine = this.getPrevLinesText(node, sourceFile);
         return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
     };
     /**
@@ -68,14 +93,16 @@ var LinesBetweenClassMembersWalker = (function (_super) {
      * We do not want to enforce a newline after opening brace for the class declaration
      */
     LinesBetweenClassMembersWalker.prototype.isPrevLineOpeningBrace = function (node, sourceFile) {
-        var prevLine = this.getPrevLineText(node, sourceFile);
+        var prevLine = this.getPrevLinesText(node, sourceFile);
         return prevLine.trim() === '{';
     };
     /**
-     * Gets the text content of the line above the method
-     * Any documenting comments are ignored and the first line above those will be retrieved instead
+     * Gets the text content of a line above the method
+     * Any documenting comments are ignored and we start from the first line above those
+     * If lineIndex is passed, it will get the text of the nth line above the method
      */
-    LinesBetweenClassMembersWalker.prototype.getPrevLineText = function (node, sourceFile) {
+    LinesBetweenClassMembersWalker.prototype.getPrevLinesText = function (node, sourceFile, lineIndex) {
+        if (lineIndex === void 0) { lineIndex = 1; }
         var pos = node.getStart();
         var comments = ts.getLeadingCommentRanges(sourceFile.text, node.pos) || [];
         if (comments.length > 0) {
@@ -84,7 +111,7 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         var lineStartPositions = sourceFile.getLineStarts();
         var startPosIdx = lineStartPositions.findIndex(function (startPos, idx) {
             return startPos > pos || idx === lineStartPositions.length - 1;
-        }) - 1;
+        }) - lineIndex;
         return sourceFile.text.substring(lineStartPositions[startPosIdx - 1], lineStartPositions[startPosIdx] - 1);
     };
     LinesBetweenClassMembersWalker.prototype.onRuleLintFail = function (node) {
@@ -106,7 +133,19 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         else {
             fix = new Lint['Fix']('lines-between-class-members', [replacement]);
         }
-        this.addFailure(this.createFailure(start, width, Rule.FAILURE_STRING, fix));
+        var options = this.getOptions();
+        var numLinesOption = options[0];
+        var errorMessage;
+        if (numLinesOption == null) {
+            errorMessage = 'must have at least one new line between class methods';
+        }
+        else if (!/^[0-9]+$/.test(numLinesOption)) {
+            errorMessage = "invalid value provided for num lines configuration - " + numLinesOption + ", see docs for how to configure";
+        }
+        else {
+            errorMessage = "must have " + numLinesOption + " new line(s) between class methods, see docs for how to configure";
+        }
+        this.addFailure(this.createFailure(start, width, errorMessage, fix));
     };
     return LinesBetweenClassMembersWalker;
 }(Lint.RuleWalker));

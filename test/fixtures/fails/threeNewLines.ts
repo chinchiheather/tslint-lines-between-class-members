@@ -1,0 +1,10 @@
+class ThreeNewLines {
+  
+
+  
+  constructor() {}
+
+
+
+  method() {}
+}

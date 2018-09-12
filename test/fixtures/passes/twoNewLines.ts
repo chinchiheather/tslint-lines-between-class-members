@@ -1,4 +1,4 @@
-class MultipleNewLines {
+class TwoNewLines {
 
 
   constructor() {}
