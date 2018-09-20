@@ -1,5 +1,6 @@
 import * as Lint from 'tslint';
 import * as ts from 'typescript';
+import { IOptions } from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -10,6 +11,12 @@ export class Rule extends Lint.Rules.AbstractRule {
 }
 
 class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
+  private difference;
+
+  constructor(sourceFile: ts.SourceFile, options: IOptions) {
+    super(sourceFile, options);
+    this.difference = 0;
+  }
 
   public visitConstructorDeclaration(node: ts.ConstructorDeclaration) {
     this.validate(node);
@@ -41,6 +48,7 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
    */
   private arePreviousLinesBlank(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
     const options = this.getOptions();
+    this.difference = 0;
     if (options.length > 0) {
       // if user has specified the number of new lines they want between their methods
       // we need to check there are exactly that many blank lines
@@ -55,12 +63,24 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
       let i;
       for (i = 0; i < numLinesOption; i++) {
         if (!this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1))) {
+          this.difference = numLinesOption - i;
           return false;
         }
       }
 
-      // finally, check line before is not blank
-      return !this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
+      // then check that the line before is NOT blank
+      // we count how many lines it takes to get to a non-blank one so we can fix properly
+      let isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
+      if (!isLineBlank) {
+        while (!isLineBlank) {
+          i++;
+          this.difference--;
+          isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
+        }
+        return false;
+      } else {
+        return true;
+      }
     } else {
       // if user has not specified the number of blank lines, we just want to check there
       // is at least one
@@ -123,24 +143,44 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
       text = this.getSourceFile().text.substr(start, width);
     }
 
-    const replacement = new Lint.Replacement(start, width, `\n  ${text}`);
-    // handle both tslint v4 & v5
+    let errorMessage;
+    let replacement: Lint.Replacement;
     let fix: any;
-    if (typeof Lint['Fix'] === 'undefined') {
-      fix = replacement;
-    } else {
-      fix = new Lint['Fix']('lines-between-class-members', [replacement]);
-    }
 
     const options = this.getOptions();
     const numLinesOption = options[0];
-    let errorMessage;
+
     if (numLinesOption == null) {
       errorMessage = 'must have at least one new line between class methods';
+      replacement = new Lint.Replacement(start, width, `\n  ${text}`);
     } else if (!/^[0-9]+$/.test(numLinesOption)) {
       errorMessage = `invalid value provided for num lines configuration - ${numLinesOption}, see docs for how to configure`;
     } else {
       errorMessage = `must have ${numLinesOption} new line(s) between class methods, see docs for how to configure`;
+
+      if (this.difference > 0) {
+        // not enough new lines add some more
+        const newLines = Array(this.difference).fill('\n').join('');
+        replacement = new Lint.Replacement(start, width, `${newLines}  ${text}`);
+      } else if (this.difference < 0) {
+        // too many lines delete some
+        const lineStartPositions = <any>this.getSourceFile().getLineStarts();
+        const startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
+          startPos > start || idx === lineStartPositions.length - 1
+        );
+        start = lineStartPositions[startPosIdx + this.difference];
+        width += lineStartPositions[startPosIdx] - start;
+        replacement = new Lint.Replacement(start, width, `  ${text}`);
+      }
+    }
+
+    if (replacement) {
+      // handle both tslint v4 & v5
+      if (typeof Lint['Fix'] === 'undefined') {
+        fix = replacement;
+      } else {
+        fix = new Lint['Fix']('lines-between-class-members', [replacement]);
+      }
     }
 
     this.addFailure(this.createFailure(start, width, errorMessage, fix));
