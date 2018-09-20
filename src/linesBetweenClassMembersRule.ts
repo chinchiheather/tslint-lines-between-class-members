@@ -1,6 +1,5 @@
 import * as Lint from 'tslint';
 import * as ts from 'typescript';
-import { IOptions } from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -13,7 +12,7 @@ export class Rule extends Lint.Rules.AbstractRule {
 class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
   private difference;
 
-  constructor(sourceFile: ts.SourceFile, options: IOptions) {
+  constructor(sourceFile: ts.SourceFile, options: Lint.IOptions) {
     super(sourceFile, options);
     this.difference = 0;
   }
