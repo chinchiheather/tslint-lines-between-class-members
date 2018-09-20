@@ -1,0 +1,6 @@
+{
+  "extends": "./tslint-enabled.json",
+  "rules": {
+    "lines-between-class-members": [true, 0]
+  }
+}

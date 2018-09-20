@@ -1,5 +1,5 @@
 {
-  "rulesDirectory": "../",
+  "rulesDirectory": "../../",
   "rules": {
     "lines-between-class-members": true
   }
