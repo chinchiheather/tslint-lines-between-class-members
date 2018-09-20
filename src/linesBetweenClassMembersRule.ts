@@ -71,16 +71,15 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
       // then check that the line before is NOT blank
       // we count how many lines it takes to get to a non-blank one so we can fix properly
       let isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
-      if (!isLineBlank) {
-        while (!isLineBlank) {
+      if (isLineBlank) {
+        while (isLineBlank) {
           i++;
           this.difference--;
           isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
         }
         return false;
-      } else {
-        return true;
       }
+      return true;
     } else {
       // if user has not specified the number of blank lines, we just want to check there
       // is at least one
@@ -167,9 +166,10 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
         const lineStartPositions = <any>this.getSourceFile().getLineStarts();
         const startPosIdx = lineStartPositions.findIndex((startPos, idx) =>
           startPos > start || idx === lineStartPositions.length - 1
-        );
+        ) - 1;
+
         start = lineStartPositions[startPosIdx + this.difference];
-        width += lineStartPositions[startPosIdx] - start;
+        width += lineStartPositions[startPosIdx] - start + 2;
         replacement = new Lint.Replacement(start, width, `  ${text}`);
       }
     }

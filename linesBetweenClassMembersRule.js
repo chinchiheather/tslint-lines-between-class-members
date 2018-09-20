@@ -75,17 +75,15 @@ var LinesBetweenClassMembersWalker = (function (_super) {
             // then check that the line before is NOT blank
             // we count how many lines it takes to get to a non-blank one so we can fix properly
             var isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
-            if (!isLineBlank) {
-                while (!isLineBlank) {
+            if (isLineBlank) {
+                while (isLineBlank) {
                     i++;
                     this.difference--;
                     isLineBlank = this.isLineBlank(this.getPrevLinesText(node, sourceFile, i + 1));
                 }
                 return false;
             }
-            else {
-                return true;
-            }
+            return true;
         }
         else {
             // if user has not specified the number of blank lines, we just want to check there
@@ -154,18 +152,19 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         }
         else {
             errorMessage = "must have " + numLinesOption + " new line(s) between class methods, see docs for how to configure";
-            // not enough new lines add some more
             if (this.difference > 0) {
+                // not enough new lines add some more
                 var newLines = Array(this.difference).fill('\n').join('');
                 replacement = new Lint.Replacement(start, width, newLines + "  " + text);
             }
             else if (this.difference < 0) {
+                // too many lines delete some
                 var lineStartPositions_1 = this.getSourceFile().getLineStarts();
                 var startPosIdx = lineStartPositions_1.findIndex(function (startPos, idx) {
                     return startPos > start || idx === lineStartPositions_1.length - 1;
-                });
+                }) - 1;
                 start = lineStartPositions_1[startPosIdx + this.difference];
-                width = comments[0].end - start;
+                width += lineStartPositions_1[startPosIdx] - start + 2;
                 replacement = new Lint.Replacement(start, width, "  " + text);
             }
         }
