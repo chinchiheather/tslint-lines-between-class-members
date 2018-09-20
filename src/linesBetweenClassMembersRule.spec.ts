@@ -30,10 +30,20 @@ test('fails when no line between class methods', (t: AssertContext) => {
   checkDefaultFailMessage(t, results);
 });
 
+test('fixes no line between class methods', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLine.ts');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails if no new line but a method comment between class methods', (t: AssertContext) => {
   const results = TestHelpers.lint('fails/noLineAndMethodComment.ts');
   t.is(results.errorCount, 2);
   checkDefaultFailMessage(t, results);
+});
+
+test('fixes no new line but a method comment between class methods', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineAndMethodComment.ts');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('fails if no new line between variable and class method', (t: AssertContext) => {
@@ -42,10 +52,20 @@ test('fails if no new line between variable and class method', (t: AssertContext
   checkDefaultFailMessage(t, results);
 });
 
+test('fixes no new line between variable and class method', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineBetweenVarAndMethod.ts');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails if no new line but a comment between variable and class method', (t: AssertContext) => {
   const results = TestHelpers.lint('fails/noLineAndCommentBetweenVarAndMethod.ts');
   t.is(results.errorCount, 2);
   checkDefaultFailMessage(t, results);
+});
+
+test('fixes no new line but a comment between variable and class method', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineAndCommentBetweenVarAndMethod.ts');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('fails if no new line between variable and constructor', (t: AssertContext) => {
@@ -54,16 +74,31 @@ test('fails if no new line between variable and constructor', (t: AssertContext)
   checkDefaultFailMessage(t, results);
 });
 
+test('fixes no new line between variable and constructor', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineBetweenVarAndConstructor.ts');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails if no new line but a comment between variable and constructor', (t: AssertContext) => {
   const results = TestHelpers.lint('fails/noLineAndCommentBetweenVarAndConstructor.ts');
   t.is(results.errorCount, 1);
   checkDefaultFailMessage(t, results);
 });
 
+test('fixes no new line but a comment between variable and constructor', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineAndCommentBetweenVarAndConstructor.ts');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails when no new line and a comment above the class', (t: AssertContext) => {
   const results = TestHelpers.lint('fails/noLineAndCommentAboveClass.ts');
   t.is(results.errorCount, 1);
   checkDefaultFailMessage(t, results);
+});
+
+test('fixes no new line and a comment above the class', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/noLineAndCommentAboveClass.ts');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('passes when empty new line between class methods', (t: AssertContext) => {
@@ -107,15 +142,25 @@ test('passes when 1 line specified and 1 line difference', (t: AssertContext) =>
 });
 
 test('fails when 1 line specified and 0 line difference', (t: AssertContext) => {
-  const results = TestHelpers.lint('fails/noNewLines.ts', 'tslint-num-lines-1.json');
+  const results = TestHelpers.lint('fails/oneLineNoNewLines.ts', 'tslint-num-lines-1.json');
   t.is(results.errorCount, 1);
   checkNumLinesFailMessage(t, results, 1);
 });
 
+test('fixes 1 line specified and 0 line difference', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/oneLineNoNewLines.ts', 'tslint-num-lines-1.json');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails when 1 line specified and 2 line difference', (t: AssertContext) => {
-  const results = TestHelpers.lint('fails/twoNewLines.ts', 'tslint-num-lines-1.json');
+  const results = TestHelpers.lint('fails/oneLineTwoNewLines.ts', 'tslint-num-lines-1.json');
   t.is(results.errorCount, 2);
   checkNumLinesFailMessage(t, results, 1);
+});
+
+test('fixes 1 line specified and 2 line difference', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/oneLineTwoNewLines.ts', 'tslint-num-lines-1.json');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('passes when 2 lines specified and 2 line difference', (t: AssertContext) => {
@@ -124,15 +169,25 @@ test('passes when 2 lines specified and 2 line difference', (t: AssertContext) =
 });
 
 test('fails when 2 lines specified and 1 line difference', (t: AssertContext) => {
-  const results = TestHelpers.lint('fails/oneNewLine.ts', 'tslint-num-lines-2.json');
+  const results = TestHelpers.lint('fails/twoLinesOneNewLine.ts', 'tslint-num-lines-2.json');
   t.is(results.errorCount, 2);
   checkNumLinesFailMessage(t, results, 2);
 });
 
+test('fixes 2 lines specified and 1 line difference', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/twoLinesOneNewLine.ts', 'tslint-num-lines-2.json');
+  t.is(fixed.target, fixed.actual);
+});
+
 test('fails when 2 lines specified and 3 line difference', (t: AssertContext) => {
-  const results = TestHelpers.lint('fails/threeNewLines.ts', 'tslint-num-lines-2.json');
+  const results = TestHelpers.lint('fails/twoLinesThreeNewLines.ts', 'tslint-num-lines-2.json');
   t.is(results.errorCount, 2);
   checkNumLinesFailMessage(t, results, 2);
+});
+
+test('fixes 2 lines specified and 3 line difference', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/twoLinesThreeNewLines.ts', 'tslint-num-lines-2.json');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('passes when 0 lines specified and 0 line difference', (t: AssertContext) => {
@@ -141,9 +196,14 @@ test('passes when 0 lines specified and 0 line difference', (t: AssertContext) =
 });
 
 test('fails when 0 lines specified and 1 line difference', (t: AssertContext) => {
-  const results = TestHelpers.lint('fails/oneNewLine.ts', 'tslint-num-lines-0.json');
+  const results = TestHelpers.lint('fails/zeroLinesOneNewLine.ts', 'tslint-num-lines-0.json');
   t.is(results.errorCount, 2);
   checkNumLinesFailMessage(t, results, 0);
+});
+
+test('fixes 0 lines specified and 1 line difference', (t: AssertContext) => {
+  const fixed = TestHelpers.fix('fails/zeroLinesOneNewLine.ts', 'tslint-num-lines-0.json');
+  t.is(fixed.target, fixed.actual);
 });
 
 test('fails when invalid value passed for num lines option', (t: AssertContext) => {

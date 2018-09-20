@@ -24,6 +24,7 @@
     "@types/node": "8.0.53",
     "ava": "^0.25.0",
     "ava-ts": "^0.24.3",
+    "temp-dir": "^1.0.0",
     "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "typescript": "2.3.4"

@@ -1,0 +1,8 @@
+class OneNewLine {
+  
+  
+  constructor() {}
+
+  
+  method() {}
+}
