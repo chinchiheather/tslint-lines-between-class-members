@@ -1,0 +1,5 @@
+function myFunc() {}
+
+export {
+  myFunc
+};

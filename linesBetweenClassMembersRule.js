@@ -44,7 +44,8 @@ var LinesBetweenClassMembersWalker = (function (_super) {
         var arePrevLinesBlank = this.arePreviousLinesBlank(node, this.getSourceFile());
         var isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
         var isPrevLineOpeningBrace = this.isPrevLineOpeningBrace(node, this.getSourceFile());
-        if (!arePrevLinesBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
+        var isClassMethod = this.isClassMethod(node);
+        if (!arePrevLinesBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace && isClassMethod) {
             this.onRuleLintFail(node);
         }
     };
@@ -109,6 +110,13 @@ var LinesBetweenClassMembersWalker = (function (_super) {
     LinesBetweenClassMembersWalker.prototype.isPrevLineOpeningBrace = function (node, sourceFile) {
         var prevLine = this.getPrevLinesText(node, sourceFile);
         return prevLine.trim() === '{';
+    };
+    /**
+     * Tests whether method is within a class (as opposed to within an object literal)
+     */
+    LinesBetweenClassMembersWalker.prototype.isClassMethod = function (node) {
+        var parentType = node.parent && node.parent.kind;
+        return parentType === ts.SyntaxKind.ClassDeclaration;
     };
     /**
      * Gets the text content of a line above the method

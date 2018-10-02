@@ -211,3 +211,23 @@ test('fails when invalid value passed for num lines option', (t: AssertContext) 
   t.is(results.errorCount, 2);
   checkInvalidConfigFailMessage(t, results);
 });
+
+test('ignores default exported object', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/exportDefault.ts');
+  t.is(results.errorCount, 0);
+});
+
+test('ignores default exported object with multiple methods', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/exportDefaultMultipleMethods.ts');
+  t.is(results.errorCount, 0);
+});
+
+test('ignores exported object', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/export.ts');
+  t.is(results.errorCount, 0);
+});
+
+test('ignores exported object with multiple methods', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/exportMultipleMethods.ts');
+  t.is(results.errorCount, 0);
+});
