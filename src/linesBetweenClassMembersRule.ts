@@ -35,7 +35,8 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
     const arePrevLinesBlank = this.arePreviousLinesBlank(node, this.getSourceFile());
     const isPrevLineClassDec = this.isPreviousLineClassDec(node, this.getSourceFile());
     const isPrevLineOpeningBrace = this.isPrevLineOpeningBrace(node, this.getSourceFile());
-    if (!arePrevLinesBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace) {
+    const isClassMethod = this.isClassMethod(node);
+    if (!arePrevLinesBlank && !isPrevLineClassDec && !isPrevLineOpeningBrace && isClassMethod) {
       this.onRuleLintFail(node);
     }
   }
@@ -106,6 +107,14 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
   private isPrevLineOpeningBrace(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
     const prevLine = this.getPrevLinesText(node, sourceFile);
     return prevLine.trim() === '{';
+  }
+
+  /**
+   * Tests whether method is within a class (as opposed to within an object literal)
+   */
+  private isClassMethod(node: ts.FunctionLikeDeclaration): boolean {
+    const parentType = node.parent && node.parent.kind;
+    return parentType === ts.SyntaxKind.ClassDeclaration;
   }
 
   /**
