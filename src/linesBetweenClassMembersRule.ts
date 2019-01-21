@@ -105,7 +105,7 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
    * We do not want to enforce a newline after opening brace for the class declaration
    */
   private isPrevLineOpeningBrace(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
-    var prevLine = this.getPrevLinesText(node, sourceFile).trim();
+    const prevLine = this.getPrevLinesText(node, sourceFile).trim();
     return prevLine === '{' || prevLine === '> {';
   }
 

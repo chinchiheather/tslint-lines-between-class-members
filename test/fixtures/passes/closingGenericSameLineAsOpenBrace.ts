@@ -3,11 +3,11 @@ export class ClosingGenericSameLineAsOpenBrace<
   TSomeOtherType, 
   TThirdType
 > {
-    someType: TSomeType;
-    someOtherType: TSomeOtherType;
-    thirdType: TThirdType;
-
     constructor() {
 
     }
+
+    someType: TSomeType;
+    someOtherType: TSomeOtherType;
+    thirdType: TThirdType;
 }
