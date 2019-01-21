@@ -131,6 +131,11 @@ test('passes if first method in class and opening brace before it and generic cl
   t.is(results.errorCount, 0);
 });
 
+test('passes if implements keyword is on a line after class definition', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/implementsKeywordOnLineBelowClassDefinition.ts');
+  t.is(results.errorCount, 0);
+});
+
 test('passes if new line and method comment between class methods', (t: AssertContext) => {
   const results = TestHelpers.lint('passes/newLineAndMethodComment.ts');
   t.is(results.errorCount, 0);
