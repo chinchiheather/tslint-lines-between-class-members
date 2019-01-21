@@ -108,8 +108,8 @@ var LinesBetweenClassMembersWalker = (function (_super) {
      * We do not want to enforce a newline after opening brace for the class declaration
      */
     LinesBetweenClassMembersWalker.prototype.isPrevLineOpeningBrace = function (node, sourceFile) {
-        var prevLine = this.getPrevLinesText(node, sourceFile);
-        return prevLine.trim() === '{';
+        var prevLine = this.getPrevLinesText(node, sourceFile).trim();
+        return prevLine === '{' || prevLine === '> {';
     };
     /**
      * Tests whether method is within a class (as opposed to within an object literal)

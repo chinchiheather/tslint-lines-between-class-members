@@ -126,6 +126,11 @@ test('passes if first method in class and opening brace before it', (t: AssertCo
   t.is(results.errorCount, 0);
 });
 
+test('passes if first method in class and opening brace before it and generic closing greater-than same line', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/closingGenericSameLineAsOpenBrace.ts');
+  t.is(results.errorCount, 0);
+});
+
 test('passes if new line and method comment between class methods', (t: AssertContext) => {
   const results = TestHelpers.lint('passes/newLineAndMethodComment.ts');
   t.is(results.errorCount, 0);
