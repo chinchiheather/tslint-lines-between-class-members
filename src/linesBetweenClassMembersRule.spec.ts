@@ -231,3 +231,8 @@ test('ignores exported object with multiple methods', (t: AssertContext) => {
   const results = TestHelpers.lint('passes/exportMultipleMethods.ts');
   t.is(results.errorCount, 0);
 });
+
+test('passes when class dec is split over several lines', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/multilineClassDec.ts');
+  t.is(results.errorCount, 0);
+});
