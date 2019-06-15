@@ -101,7 +101,7 @@ var LinesBetweenClassMembersWalker = (function (_super) {
      */
     LinesBetweenClassMembersWalker.prototype.isPreviousLineClassDec = function (node, sourceFile) {
         var prevLine = this.getPrevLinesText(node, sourceFile);
-        return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+        return /\b(class|implements|extends)\b\s+[A-Za-z0-9]+/.test(prevLine);
     };
     /**
      * Tests whether the previous line is the opening brace

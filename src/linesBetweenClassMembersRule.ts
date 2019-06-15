@@ -97,7 +97,7 @@ class LinesBetweenClassMembersWalker extends Lint.RuleWalker {
    */
   private isPreviousLineClassDec(node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean {
     const prevLine = this.getPrevLinesText(node, sourceFile);
-    return /\bclass\b\s+[A-Za-z0-9]+/.test(prevLine);
+    return /\b(class|implements|extends)\b\s+[A-Za-z0-9]+/.test(prevLine);
   }
 
   /**
