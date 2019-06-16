@@ -1,5 +1,5 @@
 class OneNewLine {
-  
+
   constructor() {}
 
   method() {}

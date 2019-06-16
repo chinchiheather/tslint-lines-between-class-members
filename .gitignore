@@ -1,4 +1,9 @@
-/node_modules
 .idea
 .vscode
+.DS_Store
+
+node_modules
 yarn-error.log
+
+linesBetweenClassMembersRule.js
+utils.js
