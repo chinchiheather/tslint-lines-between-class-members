@@ -1,5 +1,5 @@
 class NoLine {
   constructor() {}
-  
+
   method() {}
 }
