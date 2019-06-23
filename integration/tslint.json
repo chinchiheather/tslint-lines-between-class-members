@@ -1,0 +1,9 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "lines-between-class-members": true
+  },
+  "rulesDirectory": [
+    "../"
+  ]
+}
