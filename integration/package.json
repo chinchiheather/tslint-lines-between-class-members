@@ -1,0 +1,14 @@
+{
+  "name": "tslint-lines-between-class-members-integration-app",
+  "version": "1.0.0",
+  "description": "App to test lines-between-class-members TSLint rule behaves as expected",
+  "license": "MIT",
+  "scripts": {
+    "lint": "tslint --config tslint.json --exclude node_modules **/*.ts",
+    "lint:fix": "yarn lint --fix"
+  },
+  "devDependencies": {
+    "tslint": "~5.15.0",
+    "typescript": "~3.4.5"
+  }
+}
