@@ -76,3 +76,18 @@ test('passes when class dec is split over several lines', (t: AssertContext) => 
   const results = TestHelpers.lint('passes/multilineClassDec.ts');
   t.is(results.errorCount, 0);
 });
+
+test('passes for class dec using generic types', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/genericClassDec.ts');
+  t.is(results.errorCount, 0);
+});
+
+test('passes for multiline class dec using generics', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/multilineGenericClassDec.ts');
+  t.is(results.errorCount, 0);
+});
+
+test('passes for multiline class dec using complex generic types', (t: AssertContext) => {
+  const results = TestHelpers.lint('passes/nestedGenericClassDec.ts');
+  t.is(results.errorCount, 0);
+});
