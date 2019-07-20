@@ -2,7 +2,6 @@ import test, {AssertContext} from 'ava';
 import {TestHelpers} from '../../test/helpers';
 
 test('fixes no line between class methods', (t: AssertContext) => {
-  console.log('test');
   const fixed = TestHelpers.fix('fails/noLine.ts');
   t.is(fixed.target, fixed.actual);
 });

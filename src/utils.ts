@@ -16,7 +16,7 @@ export const isPreviousLineClassDec = (node: ts.FunctionLikeDeclaration, sourceF
  */
 export const isPrevLineOpeningBrace = (node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile): boolean => {
   const prevLine = getPrevLinesText(node, sourceFile);
-  return prevLine.trim() === '{';
+  return /^((\s*{\s*)|([\w\s,<]*\>\s*{\s*))$/.test(prevLine);
 };
 
 /**
