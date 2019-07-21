@@ -37,6 +37,7 @@ yarn compile:watch
 And then in another terminal run the linting script from inside the sample project:
 ```bash
 cd ./integration/
+yarn
 
 yarn lint
 # or

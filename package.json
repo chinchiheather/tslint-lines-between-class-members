@@ -3,7 +3,6 @@
   "version": "1.3.5",
   "description": "Custom rule for TSLint to enforce blank lines between class methods - achieves a similar thing to lines-between-class-members in ESLint",
   "scripts": {
-    "postinstall": "cd ./integration && yarn",
     "lint": "tslint --config tslint.json --exclude node_modules **/*.ts",
     "test": "ava-ts src/**/test/**/*.spec.ts --verbose",
     "test:watch": "concurrently \"yarn test --watch\" \"yarn compile:watch\" -n \"ava,tsc\" -p -c \"magenta,blue\"",
